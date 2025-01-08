@@ -1,4 +1,4 @@
-# Programming Tutor
+# Code/Explorer
 
 An AI-powered programming tutor that helps users learn coding through intelligent code analysis and personalized feedback.
 
