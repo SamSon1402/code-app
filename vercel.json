@@ -1,0 +1,33 @@
+{
+    "version": 2,
+    "buildCommand": "cd frontend && npm install && npm run build",
+    "outputDirectory": "frontend/dist",
+    "functions": {
+      "backend/app/**/*.py": {
+        "runtime": "python3.9"
+      }
+    },
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "/backend/app/api/$1"
+      },
+      {
+        "source": "/(.*)",
+        "destination": "/"
+      }
+    ],
+    "env": {
+      "OPENAI_API_KEY": "@openai_api_key"
+    },
+    "builds": [
+      {
+        "src": "frontend/package.json",
+        "use": "@vercel/static-build"
+      },
+      {
+        "src": "backend/app/**/*.py",
+        "use": "@vercel/python"
+      }
+    ]
+  }
