@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
@@ -15,12 +15,18 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Initialize FastAPI app
-app = FastAPI()
+app = FastAPI(title="CodeBuddy API", 
+             description="API for code analysis using OpenAI GPT",
+             version="1.0.0")
 
-# Add CORS middleware
+# Add CORS middleware with Vercel domains
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",  # Local development
+        "https://*.vercel.app",   # Vercel deployment domains
+        "https://*.now.sh"        # Alternative Vercel domains
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -130,7 +136,19 @@ Remember to:
 # Initialize OpenAI client
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-@app.post("/analyze", response_model=CodeAnalysisResponse)
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    """Middleware to handle CORS preflight requests and add processing time header"""
+    if request.method == "OPTIONS":
+        response = await call_next(request)
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        return response
+    response = await call_next(request)
+    return response
+
+@app.post("/api/analyze", response_model=CodeAnalysisResponse)
 async def analyze_code(request: CodeAnalysisRequest):
     """
     Analyze code using OpenAI's GPT model with CodeBuddy's friendly, educational style.
@@ -198,7 +216,6 @@ async def analyze_code(request: CodeAnalysisRequest):
             closing=closing
         )
 
-        # Log the response we're sending
         logger.info("Sending analysis response")
         logger.debug(f"Response data: {response_data.dict()}")
         
@@ -211,12 +228,23 @@ async def analyze_code(request: CodeAnalysisRequest):
             detail=f"Error analyzing code: {str(e)}"
         )
 
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
     """Health check endpoint"""
     return {
         "status": "ok",
-        "service": "code-analyzer"
+        "service": "code-analyzer",
+        "version": "1.0.0"
+    }
+
+# Root route for Vercel deployment verification
+@app.get("/")
+async def root():
+    """Root endpoint for verification"""
+    return {
+        "message": "CodeBuddy API is running",
+        "version": "1.0.0",
+        "status": "operational"
     }
 
 if __name__ == "__main__":
