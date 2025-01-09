@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": {
         "buildCommand": "cd frontend && npm install && npm run build",
-        "distDir": "dist"
+        "outputDirectory": "frontend/dist"
       }
     },
     {
@@ -14,14 +14,17 @@
       "use": "@vercel/python"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/backend/app/api/$1"
+      "src": "/api/(.*)",
+      "dest": "backend/app/api/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/frontend/dist/index.html"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
+      "dest": "frontend/dist/index.html"
     }
   ],
   "env": {
