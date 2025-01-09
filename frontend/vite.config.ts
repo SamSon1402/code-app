@@ -8,7 +8,7 @@ export default defineConfig({
     assetsDir: 'assets',
     emptyOutDir: true
   },
-  base: './',
+  base: '/',
   server: {
     port: 3000
   }
