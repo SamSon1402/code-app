@@ -1,4 +1,5 @@
-# Python
+# You can use any text editor or this command
+echo "# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -44,4 +45,4 @@ yarn-error.log*
 Thumbs.db
 
 # Vercel
-.vercel
+.vercel" > .gitignore
