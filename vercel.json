@@ -8,23 +8,12 @@
         "buildCommand": "cd frontend && npm install && npm run build",
         "outputDirectory": "frontend/dist"
       }
-    },
-    {
-      "src": "backend/app/**/*.py",
-      "use": "@vercel/python"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "backend/app/api/$1"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/.*",
-      "dest": "frontend/dist/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "env": {
