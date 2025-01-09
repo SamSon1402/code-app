@@ -3,14 +3,16 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/', // This is important for proper routing
+  base: '/',
   build: {
     outDir: 'dist',
-    assetsDir: 'assets',
-    // Ensure assets are properly handled
+    sourcemap: true,
+    emptyOutDir: true,
     rollupOptions: {
       output: {
-        manualChunks: undefined
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+        }
       }
     }
   }
