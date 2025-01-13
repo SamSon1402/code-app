@@ -1,4 +1,7 @@
 # ⚡ CODE/EXPLORER ⚡
+
+![Xaaaa](https://github.com/user-attachments/assets/c43eadcd-6d93-4ee9-92a8-8c526fbffb18)
+
 > *Navigate the Code Universe*
 
 ```
